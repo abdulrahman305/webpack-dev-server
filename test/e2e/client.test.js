@@ -51,7 +51,7 @@ describe("client option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/ws`, {
+      const response = await page.goto(`http://localhost:${port}/ws`, {
         waitUntil: "networkidle0",
       });
 
@@ -120,7 +120,7 @@ describe("client option", () => {
         });
 
       const response = await page.goto(
-        `http://127.0.0.1:${port}/foo/test/bar`,
+        `http://localhost:${port}/foo/test/bar`,
         {
           waitUntil: "networkidle0",
         },
@@ -177,7 +177,7 @@ describe("client option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/main.js`, {
+      const response = await page.goto(`http://localhost:${port}/main.js`, {
         waitUntil: "networkidle0",
       });
 
@@ -200,13 +200,12 @@ describe("client option", () => {
     let browser;
 
     class OverrideServer extends Server {
-      // eslint-disable-next-line class-methods-use-this
       getClientEntry() {
         return require.resolve(
           "../fixtures/custom-client/CustomClientEntry.js",
         );
       }
-      // eslint-disable-next-line class-methods-use-this
+
       getClientHotEntry() {
         return require.resolve(
           "../fixtures/custom-client/CustomClientHotEntry.js",
@@ -235,7 +234,7 @@ describe("client option", () => {
     });
 
     it("should disable client entry", async () => {
-      const response = await page.goto(`http://127.0.0.1:${port}/main.js`, {
+      const response = await page.goto(`http://localhost:${port}/main.js`, {
         waitUntil: "networkidle0",
       });
 
@@ -304,7 +303,7 @@ describe("client option", () => {
     ];
 
     describe("passed to server", () => {
-      clientModes.forEach((data) => {
+      for (const data of clientModes) {
         it(`${data.title} ${
           data.shouldThrow ? "should throw" : "should not throw"
         }`, async () => {
@@ -334,7 +333,7 @@ describe("client option", () => {
 
           await server.stop();
         });
-      });
+      }
     });
   });
 });

@@ -8,12 +8,10 @@ const config = require("../fixtures/client-config/webpack.config");
 const runBrowser = require("../helpers/run-browser");
 const port = require("../ports-map")["web-socket-communication"];
 
-jest.setTimeout(60000);
-
 describe("web socket communication", () => {
   const webSocketServers = ["ws", "sockjs"];
 
-  webSocketServers.forEach((websocketServer) => {
+  for (const websocketServer of webSocketServers) {
     it(`should work and close web socket client connection when web socket server closed ("${websocketServer}")`, async () => {
       WebsocketServer.heartbeatInterval = 100;
 
@@ -40,7 +38,7 @@ describe("web socket communication", () => {
             pageErrors.push(error);
           });
 
-        await page.goto(`http://127.0.0.1:${port}/`, {
+        await page.goto(`http://localhost:${port}/`, {
           waitUntil: "networkidle0",
         });
 
@@ -59,8 +57,6 @@ describe("web socket communication", () => {
 
         expect(consoleMessages).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
       }
@@ -92,7 +88,7 @@ describe("web socket communication", () => {
             pageErrors.push(error);
           });
 
-        await page.goto(`http://127.0.0.1:${port}/`, {
+        await page.goto(`http://localhost:${port}/`, {
           waitUntil: "networkidle0",
         });
         await browser.close();
@@ -104,13 +100,11 @@ describe("web socket communication", () => {
           }, 200);
         });
 
-        expect(server.webSocketServer.clients.length).toBe(0);
+        expect(server.webSocketServer.clients).toHaveLength(0);
         expect(
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await server.stop();
       }
@@ -142,7 +136,7 @@ describe("web socket communication", () => {
             pageErrors.push(error);
           });
 
-        await page.goto(`http://127.0.0.1:${port}/`, {
+        await page.goto(`http://localhost:${port}/`, {
           waitUntil: "networkidle0",
         });
 
@@ -157,16 +151,14 @@ describe("web socket communication", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
       }
     });
-  });
+  }
 
-  it(`should work and do heartbeat using ("ws" web socket server)`, async () => {
+  it('should work and do heartbeat using ("ws" web socket server)', async () => {
     WebsocketServer.heartbeatInterval = 100;
 
     const compiler = webpack(config);
@@ -180,16 +172,16 @@ describe("web socket communication", () => {
 
     server.webSocketServer.heartbeatInterval = 100;
 
+    let opened = false;
+    let received = false;
+
     await new Promise((resolve, reject) => {
-      const ws = new WebSocket(`ws://127.0.0.1:${devServerOptions.port}/ws`, {
+      const ws = new WebSocket(`ws://localhost:${devServerOptions.port}/ws`, {
         headers: {
-          host: `127.0.0.1:${devServerOptions.port}`,
-          origin: `http://127.0.0.1:${devServerOptions.port}`,
+          host: `localhost:${devServerOptions.port}`,
+          origin: `http://localhost:${devServerOptions.port}`,
         },
       });
-
-      let opened = false;
-      let received = false;
 
       ws.on("open", () => {
         opened = true;
@@ -217,6 +209,9 @@ describe("web socket communication", () => {
         resolve();
       });
     });
+
+    expect(opened).toBe(true);
+    expect(received).toBe(true);
 
     await server.stop();
   });

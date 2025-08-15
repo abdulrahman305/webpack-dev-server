@@ -4,9 +4,11 @@
 
 "use strict";
 
-describe("'createSocketURL' function ", () => {
+describe("'createSocketURL' function", () => {
+  globalThis.__webpack_hash__ = "hash";
+
   const samples = [
-    // __resourceQuery, location and socket URL
+    // // __resourceQuery, location and socket URL
     [
       "?hostname=example.com&pathname=/ws",
       "http://example.com",
@@ -102,28 +104,40 @@ describe("'createSocketURL' function ", () => {
     [null, "file://localhost/", "ws://localhost/ws"],
   ];
 
-  samples.forEach(([__resourceQuery, location, expected]) => {
-    jest.doMock(
-      "../../../client-src/utils/getCurrentScriptSource",
-      () => () => new URL("./entry.js", location).toString(),
-    );
+  for (const [__resourceQuery, location, expected] of samples) {
+    it(`should return '${expected}' socket URL when '__resourceQuery' is '${__resourceQuery}' and 'self.location' is '${location}'`, () => {
+      globalThis.__resourceQuery = __resourceQuery;
 
-    const createSocketURL =
-      require("../../../client-src/utils/createSocketURL").default;
-    const parseURL = require("../../../client-src/utils/parseURL").default;
+      if (__resourceQuery === null) {
+        Object.defineProperty(document, "currentScript", {
+          value: document.createElement("script"),
+          configurable: true,
+        });
+      }
 
-    test(`should return '${expected}' socket URL when '__resourceQuery' is '${__resourceQuery}' and 'self.location' is '${location}'`, () => {
+      const client = require("../../../client-src/index");
+
+      const { createSocketURL } = client;
+      const { parseURL } = client;
+
       const selfLocation = new URL(location);
 
-      delete window.location;
+      delete globalThis.location;
 
-      window.location = selfLocation;
+      globalThis.location = selfLocation;
 
       const parsedURL = parseURL(__resourceQuery);
+
+      if (__resourceQuery === null) {
+        Object.defineProperty(document, "currentScript", {
+          value: null,
+          configurable: true,
+        });
+      }
 
       expect(createSocketURL(parsedURL)).toBe(expected);
     });
 
     jest.resetModules();
-  });
+  }
 });

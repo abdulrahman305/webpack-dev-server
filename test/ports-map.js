@@ -81,20 +81,22 @@ const listOfTests = {
   "setup-middlewares-option": 1,
   "options-request-response": 2,
   app: 1,
+  "cross-origin-request": 2,
 };
 
 let startPort = 8089;
 
 const ports = {};
 
-Object.keys(listOfTests).forEach((key) => {
+for (const key of Object.keys(listOfTests)) {
   const value = listOfTests[key];
 
   ports[key] =
     value === 1
       ? (startPort += 1)
-      : [...new Array(value)].map(() => (startPort += 1));
-});
+      : // eslint-disable-next-line no-loop-func
+        Array.from({ length: value }).map(() => (startPort += 1));
+}
 
 const busy = {};
 

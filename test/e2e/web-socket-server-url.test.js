@@ -1,8 +1,8 @@
 "use strict";
 
 const express = require("express");
-const webpack = require("webpack");
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const webpack = require("webpack");
 const Server = require("../../lib/Server");
 const config = require("../fixtures/client-config/webpack.config");
 const runBrowser = require("../helpers/run-browser");
@@ -94,7 +94,7 @@ describe("web socket server URL", () => {
         await page.goto(`http://${proxyHost}:${proxyPort}/`, {
           waitUntil: "networkidle0",
         });
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://${devServerHost}:${devServerPort}/ws`,
@@ -103,8 +103,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         proxy.close();
         await browser.close();
@@ -192,7 +190,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://${devServerHost}:${devServerPort}/ws`,
@@ -201,8 +199,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         proxy.close();
         await browser.close();
@@ -211,7 +207,7 @@ describe("web socket server URL", () => {
     });
 
     it(`should work behind proxy, when hostnames are different and ports are different ("${webSocketServer}")`, async () => {
-      const devServerHost = "127.0.0.1";
+      const devServerHost = "localhost";
       const devServerPort = port1;
       const proxyHost = Server.internalIPSync("v4");
       const proxyPort = port2;
@@ -294,7 +290,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://${devServerHost}:${devServerPort}/ws`,
@@ -303,8 +299,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         proxy.close();
 
@@ -397,7 +391,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://${resolvedHost}:${resolvedPort}/ws`,
@@ -406,8 +400,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         proxy.close();
 
@@ -477,7 +469,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://localhost:${port1}/ws`,
@@ -486,8 +478,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -553,7 +543,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://localhost:${port1}/ws`,
@@ -562,15 +552,13 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
       }
     });
 
-    it(`should work with the "client.webSocketURL.protocol" option using "http:" value and covert to "ws:" ("${webSocketServer}")`, async () => {
+    it(`should work with the "client.webSocketURL.protocol" option using "http:" value and convert to "ws:" ("${webSocketServer}")`, async () => {
       const compiler = webpack(config);
       const devServerOptions = {
         client: {
@@ -629,7 +617,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://localhost:${port1}/ws`,
@@ -638,8 +626,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -705,7 +691,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -714,8 +700,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -780,7 +764,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -789,8 +773,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -856,7 +838,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -865,8 +847,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -932,7 +912,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -941,8 +921,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1015,7 +993,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           webSocketServer === "sockjs"
@@ -1026,8 +1004,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1092,7 +1068,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -1101,8 +1077,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1168,7 +1142,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -1177,8 +1151,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1239,7 +1211,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -1248,8 +1220,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1314,7 +1284,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://zenitsu@127.0.0.1:${port1}/ws`,
@@ -1323,8 +1293,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1393,7 +1361,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           // "sockjs" has bug with parsing URL
@@ -1405,8 +1373,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1473,7 +1439,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://zenitsu:chuntaro@127.0.0.1:${port1}/ws`,
@@ -1482,8 +1448,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1549,7 +1513,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/custom-ws/foo/bar`,
@@ -1558,8 +1522,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1626,7 +1588,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           webSocketServer === "ws"
@@ -1637,8 +1599,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1709,7 +1669,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/custom-ws/foo/bar`,
@@ -1718,8 +1678,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1790,7 +1748,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/custom-ws`,
@@ -1799,8 +1757,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1871,7 +1827,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/custom-ws/`,
@@ -1880,8 +1836,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -1953,7 +1907,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           webSocketServer === "ws"
@@ -1964,8 +1918,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2038,7 +1990,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/custom-ws`,
@@ -2047,8 +1999,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2108,7 +2058,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://${hostname}:${port1}/ws`,
@@ -2117,8 +2067,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2179,7 +2127,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://${hostname}:${port1}/ws`,
@@ -2188,8 +2136,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2249,7 +2195,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://${hostname}:${port1}/ws`,
@@ -2258,8 +2204,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2267,7 +2211,7 @@ describe("web socket server URL", () => {
     });
 
     it(`should work with "server: 'https'" option ("${webSocketServer}")`, async () => {
-      const hostname = "127.0.0.1";
+      const hostname = "localhost";
       const compiler = webpack(config);
       const devServerOptions = {
         webSocketServer,
@@ -2320,7 +2264,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         if (webSocketServer === "ws") {
           expect(webSocketRequest.url).toContain(
@@ -2336,91 +2280,96 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
       }
     });
 
-    it(`should work with "server: 'spdy'" option ("${webSocketServer}")`, async () => {
-      const hostname = "127.0.0.1";
-      const compiler = webpack(config);
-      const devServerOptions = {
-        webSocketServer,
-        port: port1,
-        server: "spdy",
-      };
-      const server = new Server(devServerOptions, compiler);
+    const [major] = process.versions.node.split(".").map(Number);
 
-      await server.start();
+    (major >= 24 ? it.skip : it)(
+      `should work with "server: 'spdy'" option ("${webSocketServer}")`,
+      async () => {
+        const hostname = "localhost";
+        const compiler = webpack(config);
+        const devServerOptions = {
+          webSocketServer,
+          port: port1,
+          server: "spdy",
+        };
+        const server = new Server(devServerOptions, compiler);
 
-      const { page, browser } = await runBrowser();
+        await server.start();
 
-      try {
-        const pageErrors = [];
-        const consoleMessages = [];
+        const { page, browser } = await runBrowser();
 
-        page
-          .on("console", (message) => {
-            consoleMessages.push(message);
-          })
-          .on("pageerror", (error) => {
-            pageErrors.push(error);
+        try {
+          const pageErrors = [];
+          const consoleMessages = [];
+
+          page
+            .on("console", (message) => {
+              consoleMessages.push(message);
+            })
+            .on("pageerror", (error) => {
+              pageErrors.push(error);
+            });
+
+          const webSocketRequests = [];
+
+          if (webSocketServer === "ws") {
+            const session = await page.target().createCDPSession();
+
+            session.on("Network.webSocketCreated", (test) => {
+              webSocketRequests.push(test);
+            });
+
+            await session.send("Target.setAutoAttach", {
+              autoAttach: true,
+              flatten: true,
+              waitForDebuggerOnStart: true,
+            });
+
+            sessionSubscribe(session);
+          } else {
+            page.on("request", (request) => {
+              if (/\/ws\//.test(request.url())) {
+                webSocketRequests.push({ url: request.url() });
+              }
+            });
+          }
+
+          await page.goto(`https://${hostname}:${port1}/`, {
+            waitUntil: "networkidle0",
           });
 
-        const webSocketRequests = [];
+          const [webSocketRequest] = webSocketRequests;
 
-        if (webSocketServer === "ws") {
-          const session = await page.target().createCDPSession();
+          /* eslint-disable jest/no-standalone-expect */
+          if (webSocketServer === "ws") {
+            expect(webSocketRequest.url).toContain(
+              `wss://${hostname}:${port1}/ws`,
+            );
+          } else {
+            expect(webSocketRequest.url).toContain(
+              `https://${hostname}:${port1}/ws`,
+            );
+          }
 
-          session.on("Network.webSocketCreated", (test) => {
-            webSocketRequests.push(test);
-          });
-
-          await session.send("Target.setAutoAttach", {
-            autoAttach: true,
-            flatten: true,
-            waitForDebuggerOnStart: true,
-          });
-
-          sessionSubscribe(session);
-        } else {
-          page.on("request", (request) => {
-            if (/\/ws\//.test(request.url())) {
-              webSocketRequests.push({ url: request.url() });
-            }
-          });
+          expect(consoleMessages.map((message) => message.text())).toEqual([
+            "[webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading enabled, Progress disabled, Overlay enabled.",
+            "[HMR] Waiting for update signal from WDS...",
+            "Hey.",
+          ]);
+          expect(pageErrors).toHaveLength(0);
+          /* eslint-enable jest/no-standalone-expect */
+        } finally {
+          await browser.close();
+          await server.stop();
         }
-
-        await page.goto(`https://${hostname}:${port1}/`, {
-          waitUntil: "networkidle0",
-        });
-
-        const webSocketRequest = webSocketRequests[0];
-
-        if (webSocketServer === "ws") {
-          expect(webSocketRequest.url).toContain(
-            `wss://${hostname}:${port1}/ws`,
-          );
-        } else {
-          expect(webSocketRequest.url).toContain(
-            `https://${hostname}:${port1}/ws`,
-          );
-        }
-
-        expect(
-          consoleMessages.map((message) => message.text()),
-        ).toMatchSnapshot("console messages");
-        expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
-      } finally {
-        await browser.close();
-        await server.stop();
-      }
-    });
+      },
+    );
 
     it(`should work when "port" option is "auto" ("${webSocketServer}")`, async () => {
       process.env.WEBPACK_DEV_SERVER_BASE_PORT = 50000;
@@ -2430,6 +2379,7 @@ describe("web socket server URL", () => {
         webSocketServer,
         port: "auto",
         host: "0.0.0.0",
+        allowedHosts: "all",
       };
       const server = new Server(devServerOptions, compiler);
 
@@ -2479,7 +2429,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${resolvedFreePort}/ws`,
@@ -2488,8 +2438,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2560,7 +2508,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -2569,8 +2517,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2634,7 +2580,7 @@ describe("web socket server URL", () => {
           waitUntil: "networkidle0",
         });
 
-        const webSocketRequest = webSocketRequests[0];
+        const [webSocketRequest] = webSocketRequests;
 
         expect(webSocketRequest.url).toContain(
           `${websocketURLProtocol}://127.0.0.1:${port1}/ws`,
@@ -2643,8 +2589,6 @@ describe("web socket server URL", () => {
           consoleMessages.map((message) => message.text()),
         ).toMatchSnapshot("console messages");
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2692,8 +2636,6 @@ describe("web socket server URL", () => {
             pageError.message.split("\n")[0].replace("SyntaxError: ", ""),
           ),
         ).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -2729,7 +2671,7 @@ describe("web socket server URL", () => {
 
             if (!isDisconnected) {
               isDisconnected = /Disconnected!/.test(text);
-              consoleMessages.push(text.replace(/:[\d]+/g, ":<port>"));
+              consoleMessages.push(text.replaceAll(/:[\d]+/g, ":<port>"));
             }
           })
           .on("pageerror", (error) => {
@@ -2756,8 +2698,6 @@ describe("web socket server URL", () => {
         expect(
           pageErrors.map((pageError) => pageError.message.split("\n")[0]),
         ).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();

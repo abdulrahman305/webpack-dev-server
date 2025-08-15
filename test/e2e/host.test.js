@@ -1,6 +1,6 @@
 "use strict";
 
-const http = require("http");
+const http = require("node:http");
 const webpack = require("webpack");
 const Server = require("../../lib/Server");
 const config = require("../fixtures/client-config/webpack.config");
@@ -58,7 +58,7 @@ async function getAddress(host, hostname) {
 describe("host", () => {
   const hosts = [
     "<not-specified>",
-    // eslint-disable-next-line no-undefined
+
     undefined,
     "0.0.0.0",
     "::",
@@ -79,6 +79,16 @@ describe("host", () => {
         devServerOptions.host = host;
       }
 
+      if (
+        host === "<not-specified>" ||
+        typeof host === "undefined" ||
+        host === "0.0.0.0" ||
+        host === "::" ||
+        host === "local-ipv6"
+      ) {
+        devServerOptions.allowedHosts = "all";
+      }
+
       const server = new Server(devServerOptions, compiler);
 
       let hostname = host;
@@ -129,8 +139,6 @@ describe("host", () => {
         ).toMatchSnapshot("console messages");
 
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -145,6 +153,16 @@ describe("host", () => {
         devServerOptions.host = host;
       }
 
+      if (
+        host === "<not-specified>" ||
+        typeof host === "undefined" ||
+        host === "0.0.0.0" ||
+        host === "::" ||
+        host === "local-ipv6"
+      ) {
+        devServerOptions.allowedHosts = "all";
+      }
+
       const server = new Server(devServerOptions, compiler);
 
       let hostname = host;
@@ -195,8 +213,6 @@ describe("host", () => {
         ).toMatchSnapshot("console messages");
 
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -212,6 +228,16 @@ describe("host", () => {
 
       if (host !== "<not-specified>") {
         devServerOptions.host = host;
+      }
+
+      if (
+        host === "<not-specified>" ||
+        typeof host === "undefined" ||
+        host === "0.0.0.0" ||
+        host === "::" ||
+        host === "local-ipv6"
+      ) {
+        devServerOptions.allowedHosts = "all";
       }
 
       const server = new Server(devServerOptions, compiler);
@@ -265,8 +291,6 @@ describe("host", () => {
         ).toMatchSnapshot("console messages");
 
         expect(pageErrors).toMatchSnapshot("page errors");
-      } catch (error) {
-        throw error;
       } finally {
         delete process.env.WEBPACK_DEV_SERVER_BASE_PORT;
 
@@ -277,6 +301,7 @@ describe("host", () => {
   }
 
   // TODO need test on error
+  // eslint-disable-next-line jest/no-commented-out-tests
   // it(`should throw an error on invalid host`, async () => {
   //   const compiler = webpack(config);
   //   const server = new Server({ port, host: "unknown.unknown" }, compiler);

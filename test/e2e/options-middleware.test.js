@@ -1,7 +1,7 @@
 "use strict";
 
-const webpack = require("webpack");
 const Express = require("express");
+const webpack = require("webpack");
 const Server = require("../../lib/Server");
 const config = require("../fixtures/client-config/webpack.config");
 const runBrowser = require("../helpers/run-browser");
@@ -65,7 +65,7 @@ describe("handle options-request correctly", () => {
     await server.start();
 
     const { page, browser } = await runBrowser();
-    const prefixUrl = "http://127.0.0.1";
+    const prefixUrl = "http://localhost";
     const htmlUrl = `${prefixUrl}:${portForServer}/test.html`;
     const appUrl = `${prefixUrl}:${portForApp}`;
 
@@ -84,7 +84,7 @@ describe("handle options-request correctly", () => {
 
       await page.evaluate(
         (url) =>
-          window.fetch(url, {
+          globalThis.fetch(url, {
             headers: {
               "another-header": "1",
             },
@@ -93,8 +93,6 @@ describe("handle options-request correctly", () => {
       );
 
       expect(responseStatus.sort()).toEqual([200, 204]);
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();

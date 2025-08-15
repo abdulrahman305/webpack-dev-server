@@ -59,9 +59,9 @@ describe("setupExitSignals option", () => {
     afterEach(async () => {
       exitSpy.mockReset();
       stdinResumeSpy.mockReset();
-      signals.forEach((signal) => {
+      for (const signal of signals) {
         process.removeAllListeners(signal);
-      });
+      }
       process.stdin.removeAllListeners("end");
       await browser.close();
       await server.stop();
@@ -76,7 +76,7 @@ describe("setupExitSignals option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/`, {
+      const response = await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -87,10 +87,10 @@ describe("setupExitSignals option", () => {
       await new Promise((resolve) => {
         const interval = setInterval(() => {
           if (doExit) {
-            expect(stopCallbackSpy.mock.calls.length).toEqual(1);
+            expect(stopCallbackSpy.mock.calls).toHaveLength(1);
 
             if (server.compiler.close) {
-              expect(closeCallbackSpy.mock.calls.length).toEqual(1);
+              expect(closeCallbackSpy.mock.calls).toHaveLength(1);
             }
 
             clearInterval(interval);

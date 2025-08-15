@@ -1,14 +1,14 @@
 "use strict";
 
-const webpack = require("webpack");
 const requireFromString = require("require-from-string");
+const webpack = require("webpack");
 const Server = require("../../lib/Server");
 const simpleConfig = require("../fixtures/module-federation-config/webpack.config");
-const objectEntryConfig = require("../fixtures/module-federation-config/webpack.object-entry.config");
 const multiConfig = require("../fixtures/module-federation-config/webpack.multi.config");
+const objectEntryConfig = require("../fixtures/module-federation-config/webpack.object-entry.config");
+const pluginConfig = require("../fixtures/module-federation-config/webpack.plugin");
 const runBrowser = require("../helpers/run-browser");
 const port = require("../ports-map")["module-federation"];
-const pluginConfig = require("../fixtures/module-federation-config/webpack.plugin");
 
 describe("Module federation", () => {
   describe("should work with simple multi-entry config", () => {
@@ -45,7 +45,7 @@ describe("Module federation", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/main.js`, {
+      const response = await page.goto(`http://localhost:${port}/main.js`, {
         waitUntil: "networkidle0",
       });
 
@@ -59,7 +59,7 @@ describe("Module federation", () => {
         exports = requireFromString(textContent);
       }).not.toThrow();
 
-      expect(exports).toEqual("entry2");
+      expect(exports).toBe("entry2");
 
       expect(consoleMessages.map((message) => message.text())).toMatchSnapshot(
         "console messages",
@@ -103,7 +103,7 @@ describe("Module federation", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/main.js`, {
+      const response = await page.goto(`http://localhost:${port}/main.js`, {
         waitUntil: "networkidle0",
       });
 
@@ -117,7 +117,7 @@ describe("Module federation", () => {
         exports = requireFromString(textContent);
       }).not.toThrow();
 
-      expect(exports).toEqual("entry2");
+      expect(exports).toBe("entry2");
 
       expect(consoleMessages.map((message) => message.text())).toMatchSnapshot(
         "console messages",
@@ -135,7 +135,7 @@ describe("Module federation", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo.js`, {
+      const response = await page.goto(`http://localhost:${port}/foo.js`, {
         waitUntil: "networkidle0",
       });
 
@@ -149,7 +149,7 @@ describe("Module federation", () => {
         exports = requireFromString(textContent);
       }).not.toThrow();
 
-      expect(exports).toEqual("entry1");
+      expect(exports).toBe("entry1");
 
       expect(consoleMessages.map((message) => message.text())).toMatchSnapshot(
         "console messages",
@@ -193,7 +193,7 @@ describe("Module federation", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/main.js`, {
+      const response = await page.goto(`http://localhost:${port}/main.js`, {
         waitUntil: "networkidle0",
       });
 
@@ -207,7 +207,7 @@ describe("Module federation", () => {
         exports = requireFromString(textContent);
       }).not.toThrow();
 
-      expect(exports).toEqual("entry2");
+      expect(exports).toBe("entry2");
 
       expect(consoleMessages.map((message) => message.text())).toMatchSnapshot(
         "console messages",
@@ -252,7 +252,7 @@ describe("Module federation", () => {
         });
 
       const response = await page.goto(
-        `http://127.0.0.1:${port}/remoteEntry.js`,
+        `http://localhost:${port}/remoteEntry.js`,
         {
           waitUntil: "networkidle0",
         },
@@ -278,7 +278,7 @@ describe("Module federation", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/main.js`, {
+      const response = await page.goto(`http://localhost:${port}/main.js`, {
         waitUntil: "networkidle0",
       });
 

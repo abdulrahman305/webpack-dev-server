@@ -1,6 +1,6 @@
 "use strict";
 
-const path = require("path");
+const path = require("node:path");
 const webpack = require("webpack");
 const Server = require("../../lib/Server");
 const config = require("../fixtures/client-config/webpack.config");
@@ -55,7 +55,7 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -63,8 +63,6 @@ describe("entry", () => {
         "console messages",
       );
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -94,7 +92,7 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -102,8 +100,6 @@ describe("entry", () => {
         "console messages",
       );
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -138,7 +134,7 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -146,8 +142,6 @@ describe("entry", () => {
         "console messages",
       );
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -177,7 +171,7 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -185,8 +179,6 @@ describe("entry", () => {
         "console messages",
       );
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -196,7 +188,10 @@ describe("entry", () => {
   it("should work with dynamic async entry", async () => {
     const compiler = webpack({
       ...config,
-      entry: () => new Promise((resolve) => resolve([entryFirst])),
+      entry: () =>
+        new Promise((resolve) => {
+          resolve([entryFirst]);
+        }),
     });
     const devServerOptions = {
       port,
@@ -219,7 +214,7 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -227,8 +222,6 @@ describe("entry", () => {
         "console messages",
       );
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -269,17 +262,15 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/test.html`, {
+      await page.goto(`http://localhost:${port}/test.html`, {
         waitUntil: "networkidle0",
       });
-      await page.addScriptTag({ url: `http://127.0.0.1:${port}/runtime.js` });
-      await page.addScriptTag({ url: `http://127.0.0.1:${port}/foo.js` });
+      await page.addScriptTag({ url: `http://localhost:${port}/runtime.js` });
+      await page.addScriptTag({ url: `http://localhost:${port}/foo.js` });
       await waitForConsoleLogFinished(consoleMessages);
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -320,17 +311,15 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/test.html`, {
+      await page.goto(`http://localhost:${port}/test.html`, {
         waitUntil: "networkidle0",
       });
-      await page.addScriptTag({ url: `http://127.0.0.1:${port}/runtime.js` });
-      await page.addScriptTag({ url: `http://127.0.0.1:${port}/bar.js` });
+      await page.addScriptTag({ url: `http://localhost:${port}/runtime.js` });
+      await page.addScriptTag({ url: `http://localhost:${port}/bar.js` });
       await waitForConsoleLogFinished(consoleMessages);
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -369,17 +358,15 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/test.html`, {
+      await page.goto(`http://localhost:${port}/test.html`, {
         waitUntil: "networkidle0",
       });
-      await page.addScriptTag({ url: `http://127.0.0.1:${port}/bar.js` });
-      await page.addScriptTag({ url: `http://127.0.0.1:${port}/foo.js` });
+      await page.addScriptTag({ url: `http://localhost:${port}/bar.js` });
+      await page.addScriptTag({ url: `http://localhost:${port}/foo.js` });
       await waitForConsoleLogFinished(consoleMessages);
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -417,7 +404,7 @@ describe("entry", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -425,8 +412,6 @@ describe("entry", () => {
         "console messages",
       );
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();

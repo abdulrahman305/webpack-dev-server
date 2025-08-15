@@ -1,6 +1,6 @@
 "use strict";
 
-const path = require("path");
+const path = require("node:path");
 const webpack = require("webpack");
 const Server = require("../../lib/Server");
 const config = require("../fixtures/client-config/webpack.config");
@@ -58,7 +58,7 @@ describe("target", () => {
             pageErrors.push(error);
           });
 
-        await page.goto(`http://127.0.0.1:${port}/`, {
+        await page.goto(`http://localhost:${port}/`, {
           waitUntil: "networkidle0",
         });
 
@@ -84,8 +84,6 @@ describe("target", () => {
         } else {
           expect(pageErrors).toMatchSnapshot("page errors");
         }
-      } catch (error) {
-        throw error;
       } finally {
         await browser.close();
         await server.stop();
@@ -113,7 +111,7 @@ describe("target", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -125,8 +123,6 @@ describe("target", () => {
       ).toMatchSnapshot("console messages");
 
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -164,7 +160,7 @@ describe("target", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -176,8 +172,6 @@ describe("target", () => {
       ).toMatchSnapshot("console messages");
 
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();

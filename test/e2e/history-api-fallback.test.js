@@ -1,11 +1,11 @@
 "use strict";
 
-const path = require("path");
+const path = require("node:path");
 const webpack = require("webpack");
 const Server = require("../../lib/Server");
-const config = require("../fixtures/historyapifallback-config/webpack.config");
 const config2 = require("../fixtures/historyapifallback-2-config/webpack.config");
 const config3 = require("../fixtures/historyapifallback-3-config/webpack.config");
+const config = require("../fixtures/historyapifallback-config/webpack.config");
 const runBrowser = require("../helpers/run-browser");
 const port = require("../ports-map")["history-api-fallback-option"];
 
@@ -51,7 +51,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo`, {
+      const response = await page.goto(`http://localhost:${port}/foo`, {
         waitUntil: "networkidle0",
       });
 
@@ -114,7 +114,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo`, {
+      const response = await page.goto(`http://localhost:${port}/foo`, {
         waitUntil: "networkidle0",
       });
 
@@ -181,7 +181,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo`, {
+      const response = await page.goto(`http://localhost:${port}/foo`, {
         waitUntil: "networkidle0",
       });
 
@@ -210,7 +210,7 @@ describe("historyApiFallback option", () => {
         });
 
       const response = await page.goto(
-        `http://127.0.0.1:${port}/random-file.txt`,
+        `http://localhost:${port}/random-file.txt`,
         {
           waitUntil: "networkidle2",
         },
@@ -276,7 +276,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/index.html`, {
+      const response = await page.goto(`http://localhost:${port}/index.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -352,7 +352,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/`, {
+      const response = await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -380,7 +380,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/acme`, {
+      const response = await page.goto(`http://localhost:${port}/acme`, {
         waitUntil: "networkidle0",
       });
 
@@ -408,7 +408,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/other`, {
+      const response = await page.goto(`http://localhost:${port}/other`, {
         waitUntil: "networkidle0",
       });
 
@@ -438,7 +438,7 @@ describe("historyApiFallback option", () => {
     let consoleSpy;
 
     beforeEach(async () => {
-      consoleSpy = jest.spyOn(global.console, "log");
+      consoleSpy = jest.spyOn(globalThis.console, "log");
 
       compiler = webpack(config);
 
@@ -476,7 +476,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo`, {
+      const response = await page.goto(`http://localhost:${port}/foo`, {
         waitUntil: "networkidle0",
       });
 
@@ -514,7 +514,7 @@ describe("historyApiFallback option", () => {
     let consoleSpy;
 
     beforeEach(async () => {
-      consoleSpy = jest.spyOn(global.console, "log");
+      consoleSpy = jest.spyOn(globalThis.console, "log");
 
       compiler = webpack(config);
 
@@ -552,7 +552,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo`, {
+      const response = await page.goto(`http://localhost:${port}/foo`, {
         waitUntil: "networkidle0",
       });
 
@@ -625,7 +625,7 @@ describe("historyApiFallback option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo`, {
+      const response = await page.goto(`http://localhost:${port}/foo`, {
         waitUntil: "networkidle0",
       });
 
@@ -645,7 +645,7 @@ describe("historyApiFallback option", () => {
     });
 
     it("should perform HEAD request in same way as GET", async () => {
-      await page.goto(`http://127.0.0.1:${port}/foo`, {
+      await page.goto(`http://localhost:${port}/foo`, {
         waitUntil: "networkidle0",
       });
 

@@ -1,6 +1,6 @@
 "use strict";
 
-const path = require("path");
+const path = require("node:path");
 const fs = require("graceful-fs");
 const webpack = require("webpack");
 const Server = require("../../lib/Server");
@@ -11,7 +11,7 @@ const runBrowser = require("../helpers/run-browser");
 const port = require("../ports-map")["multi-compiler"];
 
 describe("multi compiler", () => {
-  it(`should work with one web target configuration and do nothing`, async () => {
+  it("should work with one web target configuration and do nothing", async () => {
     const compiler = webpack(oneWebTargetConfiguration);
     const devServerOptions = {
       port,
@@ -34,21 +34,19 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/`, {
+      await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
     }
   });
 
-  it(`should work with web target configurations and do nothing`, async () => {
+  it("should work with web target configurations and do nothing", async () => {
     const compiler = webpack(twoWebTargetConfiguration);
     const devServerOptions = {
       port,
@@ -72,7 +70,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/one-main.html`, {
+      await page.goto(`http://localhost:${port}/one-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -82,21 +80,19 @@ describe("multi compiler", () => {
       pageErrors = [];
       consoleMessages = [];
 
-      await page.goto(`http://127.0.0.1:${port}/two-main.html`, {
+      await page.goto(`http://localhost:${port}/two-main.html`, {
         waitUntil: "networkidle0",
       });
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
     }
   });
 
-  it(`should work with web target configurations when hot and live reloads are enabled, and do hot reload by default when changing own entries`, async () => {
+  it("should work with web target configurations when hot and live reloads are enabled, and do hot reload by default when changing own entries", async () => {
     const compiler = webpack(twoWebTargetConfiguration);
     const devServerOptions = {
       port,
@@ -140,7 +136,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/one-main.html`, {
+      await page.goto(`http://localhost:${port}/one-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -154,7 +150,7 @@ describe("multi compiler", () => {
       pageErrors = [];
       consoleMessages = [];
 
-      await page.goto(`http://127.0.0.1:${port}/two-main.html`, {
+      await page.goto(`http://localhost:${port}/two-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -164,8 +160,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -175,7 +169,7 @@ describe("multi compiler", () => {
     }
   });
 
-  it(`should work with web target configurations when only hot reload is enabled, and do hot reload when changing own entries`, async () => {
+  it("should work with web target configurations when only hot reload is enabled, and do hot reload when changing own entries", async () => {
     const compiler = webpack(twoWebTargetConfiguration);
     const devServerOptions = {
       port,
@@ -219,7 +213,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/one-main.html`, {
+      await page.goto(`http://localhost:${port}/one-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -233,7 +227,7 @@ describe("multi compiler", () => {
       pageErrors = [];
       consoleMessages = [];
 
-      await page.goto(`http://127.0.0.1:${port}/two-main.html`, {
+      await page.goto(`http://localhost:${port}/two-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -243,8 +237,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -254,7 +246,7 @@ describe("multi compiler", () => {
     }
   });
 
-  it(`should work with web target configurations when only live reload is enabled, and do live reload when changing own entries`, async () => {
+  it("should work with web target configurations when only live reload is enabled, and do live reload when changing own entries", async () => {
     const compiler = webpack(twoWebTargetConfiguration);
     const devServerOptions = {
       port,
@@ -290,7 +282,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/one-main.html`, {
+      await page.goto(`http://localhost:${port}/one-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -304,7 +296,7 @@ describe("multi compiler", () => {
       pageErrors = [];
       consoleMessages = [];
 
-      await page.goto(`http://127.0.0.1:${port}/two-main.html`, {
+      await page.goto(`http://localhost:${port}/two-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -314,8 +306,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -325,7 +315,7 @@ describe("multi compiler", () => {
     }
   });
 
-  it(`should work with web target configurations when only live reload is enabled and do live reload when changing other entries`, async () => {
+  it("should work with web target configurations when only live reload is enabled and do live reload when changing other entries", async () => {
     const compiler = webpack(twoWebTargetConfiguration);
     const devServerOptions = {
       port,
@@ -361,7 +351,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/one-main.html`, {
+      await page.goto(`http://localhost:${port}/one-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -375,7 +365,7 @@ describe("multi compiler", () => {
       pageErrors = [];
       consoleMessages = [];
 
-      await page.goto(`http://127.0.0.1:${port}/two-main.html`, {
+      await page.goto(`http://localhost:${port}/two-main.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -385,8 +375,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -411,7 +399,7 @@ describe("multi compiler", () => {
     const consoleMessages = [];
     try {
       const serverResponse = await page.goto(
-        `http://127.0.0.1:${port}/server.js`,
+        `http://localhost:${port}/server.js`,
         {
           waitUntil: "networkidle0",
         },
@@ -430,11 +418,9 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/browser.html`, {
+      await page.goto(`http://localhost:${port}/browser.html`, {
         waitUntil: "networkidle0",
       });
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -444,7 +430,7 @@ describe("multi compiler", () => {
     expect(pageErrors).toMatchSnapshot("page errors");
   });
 
-  it(`should work with universal configuration when hot and live reloads are enabled, and do hot reload for browser compiler by default when browser entry changed`, async () => {
+  it("should work with universal configuration when hot and live reloads are enabled, and do hot reload for browser compiler by default when browser entry changed", async () => {
     const compiler = webpack(universalConfiguration);
     const devServerOptions = {
       port,
@@ -470,7 +456,7 @@ describe("multi compiler", () => {
 
     try {
       const serverResponse = await page.goto(
-        `http://127.0.0.1:${port}/server.js`,
+        `http://localhost:${port}/server.js`,
         {
           waitUntil: "networkidle0",
         },
@@ -500,7 +486,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/browser.html`, {
+      await page.goto(`http://localhost:${port}/browser.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -513,8 +499,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -524,7 +508,7 @@ describe("multi compiler", () => {
     }
   });
 
-  it(`should work with universal configuration when only hot reload is enabled, and do hot reload for browser compiler when browser entry changed`, async () => {
+  it("should work with universal configuration when only hot reload is enabled, and do hot reload for browser compiler when browser entry changed", async () => {
     const compiler = webpack(universalConfiguration);
     const devServerOptions = {
       port,
@@ -545,7 +529,7 @@ describe("multi compiler", () => {
 
     try {
       const serverResponse = await page.goto(
-        `http://127.0.0.1:${port}/server.js`,
+        `http://localhost:${port}/server.js`,
         {
           waitUntil: "networkidle0",
         },
@@ -575,7 +559,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/browser.html`, {
+      await page.goto(`http://localhost:${port}/browser.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -588,8 +572,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -598,7 +580,7 @@ describe("multi compiler", () => {
     }
   });
 
-  it(`should work with universal configuration when only live reload is enabled, and do live reload for browser compiler when changing browser and server entries`, async () => {
+  it("should work with universal configuration when only live reload is enabled, and do live reload for browser compiler when changing browser and server entries", async () => {
     const compiler = webpack(universalConfiguration);
     const devServerOptions = {
       port,
@@ -624,7 +606,7 @@ describe("multi compiler", () => {
 
     try {
       const serverResponse = await page.goto(
-        `http://127.0.0.1:${port}/server.js`,
+        `http://localhost:${port}/server.js`,
         {
           waitUntil: "networkidle0",
         },
@@ -646,7 +628,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/browser.html`, {
+      await page.goto(`http://localhost:${port}/browser.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -663,7 +645,7 @@ describe("multi compiler", () => {
       pageErrors = [];
       consoleMessages = [];
 
-      await page.goto(`http://127.0.0.1:${port}/browser.html`, {
+      await page.goto(`http://localhost:${port}/browser.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -676,8 +658,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();
@@ -687,7 +667,7 @@ describe("multi compiler", () => {
     }
   });
 
-  it(`should work with universal configuration when only live reload is enabled, and do live reload for browser compiler when changing server and browser entries`, async () => {
+  it("should work with universal configuration when only live reload is enabled, and do live reload for browser compiler when changing server and browser entries", async () => {
     const compiler = webpack(universalConfiguration);
     const devServerOptions = {
       port,
@@ -713,7 +693,7 @@ describe("multi compiler", () => {
 
     try {
       const serverResponse = await page.goto(
-        `http://127.0.0.1:${port}/server.js`,
+        `http://localhost:${port}/server.js`,
         {
           waitUntil: "networkidle0",
         },
@@ -735,7 +715,7 @@ describe("multi compiler", () => {
           pageErrors.push(error);
         });
 
-      await page.goto(`http://127.0.0.1:${port}/browser.html`, {
+      await page.goto(`http://localhost:${port}/browser.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -752,7 +732,7 @@ describe("multi compiler", () => {
       pageErrors = [];
       consoleMessages = [];
 
-      await page.goto(`http://127.0.0.1:${port}/browser.html`, {
+      await page.goto(`http://localhost:${port}/browser.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -765,8 +745,6 @@ describe("multi compiler", () => {
 
       expect(consoleMessages).toMatchSnapshot("console messages");
       expect(pageErrors).toMatchSnapshot("page errors");
-    } catch (error) {
-      throw error;
     } finally {
       await browser.close();
       await server.stop();

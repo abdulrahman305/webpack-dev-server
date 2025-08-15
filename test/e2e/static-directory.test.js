@@ -1,13 +1,13 @@
 "use strict";
 
-const path = require("path");
+const path = require("node:path");
 const fs = require("graceful-fs");
 const webpack = require("webpack");
 const Server = require("../../lib/Server");
-const testServer = require("../helpers/test-server");
 const config = require("../fixtures/static-config/webpack.config");
-const port = require("../ports-map")["static-directory-option"];
 const runBrowser = require("../helpers/run-browser");
+const testServer = require("../helpers/test-server");
+const port = require("../ports-map")["static-directory-option"];
 
 const staticDirectory = path.resolve(__dirname, "../fixtures/static-config");
 const publicDirectory = path.resolve(staticDirectory, "public");
@@ -61,7 +61,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/`, {
+      const response = await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -85,7 +85,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/other.html`, {
+      const response = await page.goto(`http://localhost:${port}/other.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -100,10 +100,11 @@ describe("static.directory option", () => {
       expect(pageErrors).toMatchSnapshot("page errors");
     });
 
-    it("Watches folder recursively", (done) => {
+    it("watches folder recursively", (done) => {
       // chokidar emitted a change,
       // meaning it watched the file correctly
-      server.staticWatchers[0].on("change", () => {
+      server.staticWatchers[0].on("change", (filepath) => {
+        expect(typeof filepath).toBe("string");
         done();
       });
 
@@ -113,14 +114,16 @@ describe("static.directory option", () => {
       }, 1000);
     });
 
-    it("Watches node_modules", (done) => {
+    it("watches node_modules", (done) => {
       const filePath = path.join(publicDirectory, "node_modules", "index.html");
 
       fs.writeFileSync(filePath, "foo", "utf8");
 
       // chokidar emitted a change,
       // meaning it watched the file correctly
-      server.staticWatchers[0].on("change", () => {
+      server.staticWatchers[0].on("change", (filepath) => {
+        expect(typeof filepath).toBe("string");
+
         fs.unlinkSync(filePath);
 
         done();
@@ -178,7 +181,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/assets`, {
+      const response = await page.goto(`http://localhost:${port}/assets`, {
         waitUntil: "networkidle0",
       });
 
@@ -202,7 +205,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/bar`, {
+      const response = await page.goto(`http://localhost:${port}/bar`, {
         waitUntil: "networkidle0",
       });
 
@@ -263,7 +266,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/assets/`, {
+      const response = await page.goto(`http://localhost:${port}/assets/`, {
         waitUntil: "networkidle0",
       });
 
@@ -290,7 +293,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/bar/`, {
+      const response = await page.goto(`http://localhost:${port}/bar/`, {
         waitUntil: "networkidle0",
       });
 
@@ -350,7 +353,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/assets`, {
+      const response = await page.goto(`http://localhost:${port}/assets`, {
         waitUntil: "networkidle0",
       });
 
@@ -377,7 +380,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/bar`, {
+      const response = await page.goto(`http://localhost:${port}/bar`, {
         waitUntil: "networkidle0",
       });
 
@@ -434,7 +437,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/`, {
+      const response = await page.goto(`http://localhost:${port}/`, {
         waitUntil: "networkidle0",
       });
 
@@ -458,7 +461,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/foo.html`, {
+      const response = await page.goto(`http://localhost:${port}/foo.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -483,7 +486,7 @@ describe("static.directory option", () => {
       });
     });
 
-    it("Should throw exception (external url)", (done) => {
+    it("should throw exception (external url)", (done) => {
       expect.assertions(1);
 
       server = testServer.start(
@@ -501,23 +504,26 @@ describe("static.directory option", () => {
       );
     });
 
-    it("Should not throw exception (local path with lower case first character)", (done) => {
+    it("should not throw exception (local path with lower case first character)", (done) => {
       testServer.start(
         config,
         {
           static: {
             directory:
               publicDirectory.charAt(0).toLowerCase() +
-              publicDirectory.substring(1),
+              publicDirectory.slice(1),
             watch: true,
           },
           port,
         },
-        done,
+        (error) => {
+          expect(error).toBeUndefined();
+          done(error);
+        },
       );
     });
 
-    it("Should not throw exception (local path with lower case first character & has '-')", (done) => {
+    it("should not throw exception (local path with lower case first character & has '-')", (done) => {
       testServer.start(
         config,
         {
@@ -527,11 +533,14 @@ describe("static.directory option", () => {
           },
           port,
         },
-        done,
+        (error) => {
+          expect(error).toBeUndefined();
+          done(error);
+        },
       );
     });
 
-    it("Should not throw exception (local path with upper case first character & has '-')", (done) => {
+    it("should not throw exception (local path with upper case first character & has '-')", (done) => {
       testServer.start(
         config,
         {
@@ -541,11 +550,14 @@ describe("static.directory option", () => {
           },
           port,
         },
-        done,
+        (error) => {
+          expect(error).toBeUndefined();
+          done(error);
+        },
       );
     });
 
-    it("Should throw exception (array with absolute url)", (done) => {
+    it("should throw exception (array with absolute url)", (done) => {
       server = testServer.start(
         config,
         {
@@ -578,7 +590,6 @@ describe("static.directory option", () => {
 
       server = new Server(
         {
-          // eslint-disable-next-line no-undefined
           static: undefined,
           port,
         },
@@ -607,7 +618,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/index.html`, {
+      const response = await page.goto(`http://localhost:${port}/index.html`, {
         waitUntil: "networkidle0",
       });
 
@@ -668,7 +679,7 @@ describe("static.directory option", () => {
           pageErrors.push(error);
         });
 
-      const response = await page.goto(`http://127.0.0.1:${port}/index.html`, {
+      const response = await page.goto(`http://localhost:${port}/index.html`, {
         waitUntil: "networkidle0",
       });
 
